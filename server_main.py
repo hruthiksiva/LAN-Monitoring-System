@@ -2,11 +2,8 @@
 
 import socket, cv2
 from vidgear.gears import NetGear
+from pickle import dumps, loads
 import threading
-import sys
-from getpass import getpass
-
-
 
 class Main():
     ids = {}
@@ -65,20 +62,6 @@ def printmsg(msgtype, msg, hdr = 'Undefined'):
 
 if __name__ == '__main__':
 
-    username="admin"
-    password="Csa@12345"
-    success=0
-    while success==0:
-        loginuser=input("Enter username : ")
-        loginpass = getpass()
-        if(loginuser==username) and (loginpass==password):
-            success=1
-        else:
-            success=0
-            print("Oops! try again, incorrect username or password")
-
-
-
     help_str = """--------------->
 list - List the Clients Connected to the Lan Monitor
 peep - Peep into Clients Screen
@@ -87,50 +70,49 @@ allow_ip - Allow an ip address or website in clients computer
 exit - Exit the Program
 help - To list commands
 --------------->"""
-    try:
-        main = Main()
-        main.start()
-        
-        print(help_str)
-        while True:
-            temp1 = input('[ LAN MONITOR ] > ')
-            if temp1 == 'list':
-                if main.clients == {}:
-                    printmsg(None, 'No Clients Connected !')
-                else:
-                    for clients in main.clients:
-                        printmsg(None, clients)
-                    
-            elif temp1 == 'peep':
-                temp2 = input('[ Client Name ] > ')
-                if temp2 in main.clients.keys():
-                    main.send_sig(main.clients[temp2][0],'VID') 
-                    main.recv_video()
-                else:
-                    printmsg('log', 'Invalid', f'No Client named {temp2} !')
-            
-            elif temp1 == 'deny_ip':
-                temp2 = input('[ Client Name ] > ')
-                temp3 = input('[ Website ] > ')
-                if temp2 in main.clients.keys():
-                    main.deny_ip(main.clients[temp2][0], temp3)
-                else:
-                    printmsg('log', 'Invalid', f'No Client named {temp2} !')
-                    
-            elif temp1 == 'allow_ip':
-                temp2 = input('[ Client Name ] > ')
-                temp3 = input('[ Website ] > ')
-                if temp2 in main.clients.keys():
-                    main.allow_ip(main.clients[temp2][0], temp3)
-                else:
-                    printmsg('log', 'Invalid', f'No Client named {temp2} !')
-            
-            elif temp1 == 'help':
-                print(help_str)
-            
-            elif temp1 == 'exit':
-                sys.exit()
+
+    main = Main()
+    main.start()
+    
+    print(help_str)
+    while True:
+        temp1 = input('[ LAN MONITOR ] > ')
+        if temp1 == 'list':
+            if main.clients == {}:
+                printmsg(None, 'No Clients Connected !')
             else:
-                printmsg('log', f'No command named {temp1} !, type help for more details.', 'Invalid')
-    except:
-        print("Server is already Online")
+                for clients in main.clients:
+                    printmsg(None, clients)
+                
+        elif temp1 == 'peep':
+            temp2 = input('[ Client Name ] > ')
+            if temp2 in main.clients.keys():
+                main.send_sig(main.clients[temp2][0],'VID') 
+                main.recv_video()
+            else:
+                printmsg('log', 'Invalid', f'No Client named {temp2} !')
+        
+        elif temp1 == 'deny_ip':
+            temp2 = input('[ Client Name ] > ')
+            temp3 = input('[ Website ] > ')
+            if temp2 in main.clients.keys():
+                main.deny_ip(main.clients[temp2][0], temp3)
+            else:
+                printmsg('log', 'Invalid', f'No Client named {temp2} !')
+                
+        elif temp1 == 'allow_ip':
+            temp2 = input('[ Client Name ] > ')
+            temp3 = input('[ Website ] > ')
+            if temp2 in main.clients.keys():
+                main.allow_ip(main.clients[temp2][0], temp3)
+            else:
+                printmsg('log', 'Invalid', f'No Client named {temp2} !')
+        
+        elif temp1 == 'help':
+            print(help_str)
+        
+        elif temp1 == 'exit':
+            break
+        else:
+            printmsg('log', f'No command named {temp1} !, type help for more details.', 'Invalid')
+    

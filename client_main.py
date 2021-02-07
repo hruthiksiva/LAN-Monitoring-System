@@ -3,6 +3,7 @@
 import socket
 from vidgear.gears import ScreenGear
 from vidgear.gears import NetGear
+from pickle import dumps, loads
 import threading
 
 class Main():
@@ -31,7 +32,7 @@ class Main():
                 elif 'DENY' in sig :
                     self.deny_ip(sig[5:])
                 elif 'ALLOW' in sig :
-                    self.allow_ip(sig[6:])
+                    self.deny_ip(sig[6:])
                 elif sig == 'CHAT':
                     pass
         self.ids['recv_sig'] = threading.Thread(target=inner)
@@ -63,18 +64,17 @@ class Main():
                 file.write(f'{REDIRECT_IP} {website}\n')
     
     def allow_ip(self, website = None):
-        with open(HOSTS_PATH, 'r+') as file: 
+        with open(hosts_path, 'r+') as file: 
             content=file.readlines() 
             file.seek(0) 
             for line in content: 
-                if not website in line: 
+                if not any(website in line for website in website_list): 
                     file.write(line)
             file.truncate()
             
 if __name__ == '__main__':
     REDIRECT_IP = '127.0.0.1'
-    #HOSTS_PATH = '/etc/hosts'
-    HOSTS_PATH = 'C:\Windows\System32\drivers\etc\hosts'
+    HOSTS_PATH = '/etc/hosts'
 
     main = Main()
     
