@@ -3,7 +3,6 @@
 import socket
 from vidgear.gears import ScreenGear
 from vidgear.gears import NetGear
-from pickle import dumps, loads
 import threading
 
 class Main():
@@ -32,7 +31,7 @@ class Main():
                 elif 'DENY' in sig :
                     self.deny_ip(sig[5:])
                 elif 'ALLOW' in sig :
-                    self.deny_ip(sig[6:])
+                    self.allow_ip(sig[6:])
                 elif sig == 'CHAT':
                     pass
         self.ids['recv_sig'] = threading.Thread(target=inner)
